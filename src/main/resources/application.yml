@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/transferservice #better use .env file variables
+    password: postgres #better use env variables
+    username: postgres #better use env variables
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
+

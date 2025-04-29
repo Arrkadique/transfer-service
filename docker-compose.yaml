@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: transferservice-db
+    environment:
+      POSTGRES_USER: postgres #better use .env file variables
+      POSTGRES_PASSWORD: postgres #better use .env file variables
+      POSTGRES_DB: transferservice #better use .env file variables
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+    networks:
+      - transferservice_network
+  transferservice:
+    build: .
+    container_name: transferservice-app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    networks:
+      - transferservice_network
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  transferservice_network:
+    driver: bridge
