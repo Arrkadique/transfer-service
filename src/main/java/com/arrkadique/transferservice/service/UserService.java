@@ -1,8 +1,10 @@
 package com.arrkadique.transferservice.service;
 
+import com.arrkadique.transferservice.dto.response.UserResponse;
 import com.arrkadique.transferservice.entity.EmailData;
 import com.arrkadique.transferservice.entity.PhoneData;
 import com.arrkadique.transferservice.entity.User;
+import com.arrkadique.transferservice.mapper.UserMapper;
 import com.arrkadique.transferservice.repository.EmailDataRepository;
 import com.arrkadique.transferservice.repository.PhoneDataRepository;
 import com.arrkadique.transferservice.repository.UserRepository;
@@ -20,6 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailDataRepository emailDataRepository;
     private final PhoneDataRepository phoneDataRepository;
+    private final UserMapper userMapper;
 
     public void updateEmail(Long userId, String newEmail) {
         if (emailDataRepository.existsByEmailAndUserIdNot(newEmail, userId)) {
@@ -60,7 +63,8 @@ public class UserService {
         phoneDataRepository.save(phone);
     }
 
-    public Page<User> searchUsers(LocalDate dob, String phone, String email, String name, Pageable pageable) {
-        return userRepository.searchUsers(dob, phone, email, name, pageable);
+    public Page<UserResponse> searchUsers(LocalDate dob, String phone, String email, String name, Pageable pageable) {
+        Page<User> users = userRepository.searchUsers(dob, phone, email, name, pageable);
+        return users.map(userMapper::toDto);
     }
 }

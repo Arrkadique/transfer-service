@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         WHERE (:dob IS NULL OR u.dateOfBirth > :dob)
           AND (:phone IS NULL OR p.phone = :phone)
           AND (:email IS NULL OR e.email = :email)
-          AND (:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')))
+          AND (u.name LIKE CONCAT(:name, '%'))
         """)
     Page<User> searchUsers(@Param("dob") LocalDate dob,
                            @Param("phone") String phone,

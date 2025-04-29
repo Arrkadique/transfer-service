@@ -36,4 +36,6 @@ public class Account {
 
     @Column(nullable = false)
     BigDecimal balance;
+
+    BigDecimal initialBalance;
 }

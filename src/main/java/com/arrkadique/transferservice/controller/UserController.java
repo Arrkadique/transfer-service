@@ -1,12 +1,16 @@
 package com.arrkadique.transferservice.controller;
 
+import com.arrkadique.transferservice.dto.response.UserResponse;
 import com.arrkadique.transferservice.entity.User;
 import com.arrkadique.transferservice.service.UserService;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,24 +28,26 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/email")
-    public void updateEmail(@RequestParam String email, Authentication auth) {
-        Long userId = Long.parseLong(auth.getName());
-        userService.updateEmail(userId, email);
+    public ResponseEntity<Void> updateEmail(@RequestParam @Email String email, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        userService.updateEmail(user.getId(), email);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/phone")
-    public void updatePhone(@RequestParam String phone, Authentication auth) {
-        Long userId = Long.parseLong(auth.getName());
-        userService.updatePhone(userId, phone);
+    public ResponseEntity<Void> updatePhone(@RequestParam @NotBlank String phone, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        userService.updatePhone(user.getId(), phone);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public Page<User> searchUsers(
+    public Page<UserResponse> searchUsers(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) String name,
-            @PageableDefault(size = 10) Pageable pageable
+            @RequestParam(required = false, defaultValue = "") String name,
+            @PageableDefault(size = 5) Pageable pageable
     ) {
         return userService.searchUsers(dateOfBirth, phone, email, name, pageable);
     }

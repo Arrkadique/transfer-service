@@ -27,3 +27,17 @@ databaseChangeLog:
         - sqlFile:
             relativeToChangelogFile: true
             path: 2-values/rollback.sql
+  - changeSet:
+      id: '30'
+      author: arrkadique
+      comment: '3-initial-balance-column'
+      changes:
+        - tagDatabase:
+            tag: 3-initial-balance-column
+        - sqlFile:
+            relativeToChangelogFile: true
+            path: 3-initial-balance-column/data.sql
+      rollback:
+        - sqlFile:
+            relativeToChangelogFile: true
+            path: 3-initial-balance-column/rollback.sql

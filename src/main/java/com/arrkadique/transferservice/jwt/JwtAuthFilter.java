@@ -2,6 +2,7 @@ package com.arrkadique.transferservice.jwt;
 
 import com.arrkadique.transferservice.entity.User;
 import com.arrkadique.transferservice.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             try {
                 Long userId = jwtUtil.extractUserId(token);
-                User user = userRepository.findById(userId).orElseThrow();
+                User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(user, null, List.of());
