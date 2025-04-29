@@ -5,10 +5,12 @@ import com.arrkadique.transferservice.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransferService {
@@ -17,6 +19,7 @@ public class TransferService {
 
     @Transactional
     public void transfer(Long fromUserId, Long toUserId, BigDecimal amount) {
+        log.info("Initiating transfer: fromUserId={}, toUserId={}, amount={}", fromUserId, toUserId, amount);
         if (fromUserId.equals(toUserId)) {
             throw new IllegalArgumentException("You cannot transfer to the same user");
         }
@@ -25,9 +28,11 @@ public class TransferService {
             throw new IllegalArgumentException("Sum must be greater than zero");
         }
 
+        log.debug("Fetching sender's account for userId={}", fromUserId);
         Account fromAccount = accountRepository.findByUserIdForUpdate(fromUserId)
             .orElseThrow(() -> new EntityNotFoundException("Sender account not found"));
 
+        log.debug("Fetching recipient's account for userId={}", toUserId);
         Account toAccount = accountRepository.findByUserIdForUpdate(toUserId)
             .orElseThrow(() -> new EntityNotFoundException("Account not found"));
 
@@ -37,5 +42,9 @@ public class TransferService {
 
         fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
         toAccount.setBalance(toAccount.getBalance().add(amount));
+
+        log.info("Transfer successful: fromUserId={}, toUserId={}, amount={} - new balances: " +
+                        "fromAccountBalance={}, toAccountBalance={}", fromUserId, toUserId, amount,
+                fromAccount.getBalance(), toAccount.getBalance());
     }
 }

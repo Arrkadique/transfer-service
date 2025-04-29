@@ -4,6 +4,7 @@ import com.arrkadique.transferservice.entity.Account;
 import com.arrkadique.transferservice.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BalanceUpdateScheduler {
@@ -24,8 +26,10 @@ public class BalanceUpdateScheduler {
     private float increasePercentage;
 
     @Transactional
-    @Scheduled(fixedRateString = "${app.deposit.update-period}", fixedDelayString = "${app.deposit.update-delay}")
+    @Scheduled(fixedRateString = "${app.deposit.update-period}", initialDelayString = "${app.deposit.update-delay}")
     public void increaseBalances() {
+        log.info("Scheduled task started: increaseBalances");
+        long start = System.currentTimeMillis();
         List<Account> accounts = accountRepository.findAllForUpdate();
         for (Account account : accounts) {
             BigDecimal current = account.getBalance();
@@ -42,5 +46,6 @@ public class BalanceUpdateScheduler {
         }
 
         accountRepository.saveAll(accounts);
+        log.info("Scheduled task completed in {} ms", System.currentTimeMillis() - start);
     }
 }

@@ -6,6 +6,7 @@ import com.arrkadique.transferservice.service.UserService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -49,6 +51,11 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "") String name,
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        return userService.searchUsers(dateOfBirth, phone, email, name, pageable);
+        log.info("API call: searchUsers | name={}, phone={}, email={}, dateOfBirth={}", name, phone, email, dateOfBirth);
+
+        Page<UserResponse> result = userService.searchUsers(dateOfBirth, phone, email, name, pageable);
+
+        log.info("API response: {} users found", result.getTotalElements());
+        return result;
     }
 }

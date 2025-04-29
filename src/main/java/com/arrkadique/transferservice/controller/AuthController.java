@@ -5,12 +5,14 @@ import com.arrkadique.transferservice.dto.response.TokenResponse;
 import com.arrkadique.transferservice.jwt.JwtUtil;
 import com.arrkadique.transferservice.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -20,9 +22,12 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        return ResponseEntity.ok(new TokenResponse(
+    public ResponseEntity<TokenResponse> login(@RequestBody AuthRequest request) {
+        TokenResponse response = new TokenResponse(
                 jwtUtil.generateToken(
-                        authService.authenticate(request.getIdentifier(), request.getPassword()).getId())));
+                        authService.authenticate(request.getIdentifier(), request.getPassword()).getId()));
+
+        log.info("Authenticated user {}", request.getIdentifier());
+        return ResponseEntity.ok(response);
     }
 }

@@ -9,6 +9,8 @@ import com.arrkadique.transferservice.repository.EmailDataRepository;
 import com.arrkadique.transferservice.repository.PhoneDataRepository;
 import com.arrkadique.transferservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -63,7 +66,9 @@ public class UserService {
         phoneDataRepository.save(phone);
     }
 
+    @Cacheable(value = "userSearchCache", key = "#name + '_' + #phone + '_' + #email + '_' + #dob + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
     public Page<UserResponse> searchUsers(LocalDate dob, String phone, String email, String name, Pageable pageable) {
+        log.debug("Cache MISS: Fetching users from DB");
         Page<User> users = userRepository.searchUsers(dob, phone, email, name, pageable);
         return users.map(userMapper::toDto);
     }

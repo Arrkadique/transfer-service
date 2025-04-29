@@ -20,7 +20,7 @@ public class TransferController {
     private final TransferService transferService;
 
     @PostMapping
-    public ResponseEntity<?> transfer(
+    public ResponseEntity<String> transfer(
             Authentication auth,
             @Valid @RequestBody TransferRequest request) {
         User user = (User) auth.getPrincipal();

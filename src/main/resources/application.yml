@@ -23,4 +23,6 @@ spring:
   liquibase:
     enabled: true
     change-log: db/changelog/db.changelog-master.yaml
+  cache:
+    type: simple #prefer to use redis
 
