@@ -17,7 +17,7 @@ spring:
       ddl-auto: validate
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/transferservice #better use .env file variables
+    url: jdbc:postgresql://postgres:5432/transferservice #better use .env file variables
     password: postgres #better use .env file variables
     username: postgres #better use .env file variables
   liquibase:
