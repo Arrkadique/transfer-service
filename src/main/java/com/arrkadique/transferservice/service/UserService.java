@@ -8,7 +8,6 @@ import com.arrkadique.transferservice.mapper.UserMapper;
 import com.arrkadique.transferservice.repository.EmailDataRepository;
 import com.arrkadique.transferservice.repository.PhoneDataRepository;
 import com.arrkadique.transferservice.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,8 +28,9 @@ public class UserService {
             throw new IllegalArgumentException("Email is already in use");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("User not found");
+        }
 
         EmailData emailData = emailDataRepository.findAll().stream()
                 .filter(e -> e.getUser().getId().equals(userId)).findFirst()

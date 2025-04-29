@@ -2,7 +2,6 @@ package com.arrkadique.transferservice.service;
 
 import com.arrkadique.transferservice.entity.Account;
 import com.arrkadique.transferservice.repository.AccountRepository;
-import com.arrkadique.transferservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,5 @@ public class TransferService {
 
         fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
         toAccount.setBalance(toAccount.getBalance().add(amount));
-
-        // Spring JPA auto-flushes due to @Transactional
     }
 }

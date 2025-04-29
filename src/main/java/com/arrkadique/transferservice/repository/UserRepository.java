@@ -11,17 +11,19 @@ import java.time.LocalDate;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("""
-        SELECT DISTINCT u FROM User u
-        LEFT JOIN u.emails e
-        LEFT JOIN u.phones p
-        WHERE (:dob IS NULL OR u.dateOfBirth > :dob)
-          AND (:phone IS NULL OR p.phone = :phone)
-          AND (:email IS NULL OR e.email = :email)
-          AND (u.name LIKE CONCAT(:name, '%'))
-        """)
+            SELECT DISTINCT u FROM User u
+            LEFT JOIN u.emails e
+            LEFT JOIN u.phones p
+            WHERE (:dob IS NULL OR u.dateOfBirth > :dob)
+              AND (:phone IS NULL OR p.phone = :phone)
+              AND (:email IS NULL OR e.email = :email)
+              AND (u.name LIKE CONCAT(:name, '%'))
+            """)
     Page<User> searchUsers(@Param("dob") LocalDate dob,
                            @Param("phone") String phone,
                            @Param("email") String email,
                            @Param("name") String name,
                            Pageable pageable);
+
+    boolean existsById(Long id);
 }

@@ -1,3 +1,15 @@
+server:
+  port: 8080
+
+app:
+  deposit:
+    update-period: 30000 #30 sec
+    update-delay: 5000 #5 sec
+    increased-percentage: 1.10 #10%
+    max-percentage: 2.07 #207%
+  jwt:
+    secret: mysupersecurejwtsecretkey1234567 #better use .env file variables
+
 spring:
   jpa:
     show-sql: true
@@ -6,8 +18,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/transferservice #better use .env file variables
-    password: postgres #better use env variables
-    username: postgres #better use env variables
+    password: postgres #better use .env file variables
+    username: postgres #better use .env file variables
   liquibase:
     enabled: true
     change-log: db/changelog/db.changelog-master.yaml

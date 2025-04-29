@@ -21,7 +21,7 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    
+
     private final UserRepository userRepository;
 
     @Override
@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
                 UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, List.of());
+                        new UsernamePasswordAuthenticationToken(user, null, List.of());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
