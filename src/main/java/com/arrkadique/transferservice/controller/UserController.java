@@ -33,18 +33,18 @@ public class UserController {
     public ResponseEntity<Void> updateEmail(@RequestParam @Email String email, Authentication auth) {
         User user = (User) auth.getPrincipal();
         userService.updateEmail(user.getId(), email);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/phone")
     public ResponseEntity<Void> updatePhone(@RequestParam @NotBlank String phone, Authentication auth) {
         User user = (User) auth.getPrincipal();
         userService.updatePhone(user.getId(), phone);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public Page<UserResponse> searchUsers(
+    public ResponseEntity<Page<UserResponse>> searchUsers(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String email,
@@ -56,6 +56,6 @@ public class UserController {
         Page<UserResponse> result = userService.searchUsers(dateOfBirth, phone, email, name, pageable);
 
         log.info("API response: {} users found", result.getTotalElements());
-        return result;
+        return ResponseEntity.ok(result);
     }
 }
