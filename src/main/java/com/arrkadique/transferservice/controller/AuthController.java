@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -26,8 +25,6 @@ public class AuthController {
         TokenResponse response = new TokenResponse(
                 jwtUtil.generateToken(
                         authService.authenticate(request.getIdentifier(), request.getPassword()).getId()));
-
-        log.info("Authenticated user {}", request.getIdentifier());
         return ResponseEntity.ok(response);
     }
 }

@@ -6,12 +6,14 @@ import com.arrkadique.transferservice.entity.User;
 import com.arrkadique.transferservice.repository.EmailDataRepository;
 import com.arrkadique.transferservice.repository.PhoneDataRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -30,8 +32,11 @@ public class AuthenticationService {
                     .map(PhoneData::getUser);
         }
 
-        return user.filter(u -> passwordEncoder.matches(rawPassword, u.getPassword())).orElseThrow(
+        User authenticated = user.filter(u -> passwordEncoder.matches(rawPassword, u.getPassword())).orElseThrow(
                 () -> new BadCredentialsException("Invalid identifier or password")
         );
+        log.info("Authenticated user {} with id {}", authenticated.getName(), authenticated.getId());
+
+        return authenticated;
     }
 }
